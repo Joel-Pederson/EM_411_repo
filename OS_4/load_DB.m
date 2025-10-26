@@ -1,5 +1,6 @@
 function [roadDB, bikeDB] = load_DB()
-% Creates and returns structs containing all component data from Appendices C and D
+% Creates and returns structs containing all component data from Appendices
+% C and D since the data was not provided in a parsable form
 % Inputs: none
 % Outputs: database values for road vehicle and bike
 % Note: all 'cost' values are in USD
@@ -14,7 +15,7 @@ roadDB.battery_pack(6) = struct('Name', 'P6', 'Capacity_kWh', 310, 'Cost', 30000
 roadDB.battery_pack(7) = struct('Name', 'P7', 'Capacity_kWh', 600, 'Cost', 57000, 'Weight_kg', 1400);
 
 % Chassis
-roadDB.chassis(1) = struct('Name', 'C1', 'Pax', 2, 'Weight_kg', 1350, 'Cost', 12000, 'NominalPower_Wh_km', 140);
+roadDB.chassis(1) = struct('Name', 'C1', 'Pax', 2, 'Weight_kg', 1350, 'Cost', 12000, 'NominalPower_Wh_km', 140); %Pax is a (apparently) common abbreviation for passengers in the transportation field
 roadDB.chassis(2) = struct('Name', 'C2', 'Pax', 4, 'Weight_kg', 1600, 'Cost', 17000, 'NominalPower_Wh_km', 135);
 roadDB.chassis(3) = struct('Name', 'C3', 'Pax', 6, 'Weight_kg', 1800, 'Cost', 21000, 'NominalPower_Wh_km', 145);
 roadDB.chassis(4) = struct('Name', 'C4', 'Pax', 8, 'Weight_kg', 2000, 'Cost', 29000, 'NominalPower_Wh_km', 150);

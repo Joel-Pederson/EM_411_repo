@@ -11,4 +11,7 @@ test_design.battery_charger = 1; % G1 (10 kW)
 test_design.motor = 1;           % M1 (50 kW)
 test_design.autonomy = 2;        % A4 (Level 4) - Let's pick 2 for variety
 
-[perf, cost, isValid] = calculateRoadVehicle(test_design, roadDB);
+[Road_EV_Design, cost, isValid] = calculateRoadVehicle(test_design, roadDB);
+[Bike_EV_Design, cost, isValid] = calculateBikeVehicle(test_design, bikeDB);
+
+% EV_design.total_fleet_cost = 
