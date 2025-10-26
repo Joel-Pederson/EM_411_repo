@@ -22,6 +22,8 @@ design{1}.battery_pack = 1;    % P1 (50 kWh)
 design{1}.battery_charger = 1; % G1 (10 kW)
 design{1}.motor = 1;           % M1 (50 kW)
 design{1}.autonomy = 2;        % A4 (Level 4)
+archTypes{1} = 'road';
+fleetSizes(1) = 25; % Our assumption for fleet size
 
 % Option 2 - TBD
 
