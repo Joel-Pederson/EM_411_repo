@@ -31,7 +31,12 @@ fleetSizes(1) = 25; % Our assumption for fleet size
 
 % Option 4 - TBD
 
-% Option 5 - TBD
+% Option 5 - Mixed Fleet (Road + Bike)
+designs{5}.road = designs{1}; % Use the TBD design
+designs{5}.bike = designs{4}; % Use the TBD design
+archTypes{5} = 'mixed';
+fleetSizes{5}.road = 15; % Assumption: 15 road vehicles
+fleetSizes{5}.bike = 50; % Assumption: 50 bikes
 
 [Road_EV_Design, cost, isValid] = calculateRoadVehicle(design, roadDB);
 [Bike_EV_Design, cost, isValid] = calculateBikeVehicle(design, bikeDB);
