@@ -50,6 +50,7 @@ Road_EV_Design.up_time_h = Road_EV_Design.range_km / Road_EV_Design.mean_speed_k
 Road_EV_Design.down_time_h = Road_EV_Design.battery_charge_time_h + 0.25;
 Road_EV_Design.availability = Road_EV_Design.up_time_h / (Road_EV_Design.up_time_h + Road_EV_Design.down_time_h); %dimensionless
 Road_EV_Design.benchmark_availability = 0.75;
+Road_EV_Design.Pax = chassis.Pax;
 end
 
 %% -- Subfunctions -- %%
