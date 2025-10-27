@@ -40,12 +40,11 @@ cost.total_vehicle_cost = Bike_EV_Design.total_vehicle_cost;
 Bike_EV_Design.battery_charge_time_h = battery.Capacity_kWh / charger.Power_kW;
 Bike_EV_Design.power_consumption_Wh_km = frame.NominalPower_Wh_km; %see appendix D note under bike frame
 Bike_EV_Design.range_km = (battery.Capacity_kWh * 1000) / Bike_EV_Design.power_consumption_Wh_km; %have to convert capacity's kilo-watt hours to watt hours
-Bike_EV_Design.mean_speed_km_h = 700 * (motor.Power_kW / Bike_EV_Design.total_vehicle_weight_kg);%Note: 700 is a constant of proportionality that converts this ratio into an average speed.
-%Provided by assignment instructions, assuming this applies to bikes too
+Bike_EV_Design.mean_speed_km_h = 4861 * (motor.Power_kW / Bike_EV_Design.total_vehicle_weight_kg);%Note: 4500 is a constant of proportionality that converts this ratio into an average speed.
+                                                                                                  %See documentation for rationale behind value of 4500
 if Bike_EV_Design.mean_speed_km_h > mphToKmph(speed_limit_mph) %if EV_design.mean_speed exceeds legal speed limit, set mean_speed_km_h to speed limit
     Bike_EV_Design.mean_speed_km_h = mphToKmph(speed_limit_mph);
 end
-Bike_EV_Design.dwell_time_s = 60; %time for passengers get in and out
 Bike_EV_Design.up_time_h = Bike_EV_Design.range_km / Bike_EV_Design.mean_speed_km_h;
 Bike_EV_Design.down_time_h = Bike_EV_Design.battery_charge_time_h + 0.25;
 Bike_EV_Design.availability = Bike_EV_Design.up_time_h / (Bike_EV_Design.up_time_h + Bike_EV_Design.down_time_h); %dimensionless

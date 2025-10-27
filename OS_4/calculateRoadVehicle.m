@@ -46,7 +46,6 @@ Road_EV_Design.mean_speed_km_h = 700 * (motor.Power_kW / Road_EV_Design.total_ve
 if Road_EV_Design.mean_speed_km_h > mphToKmph(speed_limit_mph) %if EV_design.mean_speed exceeds legal speed limit, set mean_speed_km_h to speed limit
     Road_EV_Design.mean_speed_km_h = mphToKmph(speed_limit_mph);
 end
-Road_EV_Design.dwell_time_s = 60; %time for passengers get in and out
 Road_EV_Design.up_time_h = Road_EV_Design.range_km / Road_EV_Design.mean_speed_km_h;
 Road_EV_Design.down_time_h = Road_EV_Design.battery_charge_time_h + 0.25;
 Road_EV_Design.availability = Road_EV_Design.up_time_h / (Road_EV_Design.up_time_h + Road_EV_Design.down_time_h); %dimensionless
