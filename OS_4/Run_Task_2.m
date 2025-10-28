@@ -72,7 +72,7 @@ fleetSizes.bike{1} = 0;  %count of bikes
 % designs{4}.bike.battery_pack = 3;     % E3 (3 kWh)
 % designs{4}.bike.battery_charger = 2;  % G2 (0.6 kW)
 % designs{4}.bike.motor = 2;            % K2 (0.5 kW)
-% designs{3}.autonomy = 1;              % A3 (Level 3)
+% designs{4}.autonomy = 1;              % A3 (Level 3)
 
 % archTypes{4} = 'mixed';
 % fleetSizes.road{4} = 20; %count of vehicles (20 shuttles)
@@ -80,21 +80,21 @@ fleetSizes.bike{1} = 0;  %count of bikes
 
 
 % Option 5 - Mixed Fleet non-autonomous (Road + Bike)
-% designs{4}.road.chassis = 4;          % C4 (8 pax)
-% designs{4}.road.battery_pack = 3;     % P3 (150 kWh)
-% designs{4}.road.battery_charger = 3;  % G3 (60 kW)
-% designs{4}.road.motor = 3;            % M3 (210 kW)
-% designs{4}.road.autonomy = 0;         % non-autonomous
+% designs{5}.road.chassis = 4;          % C4 (8 pax)
+% designs{5}.road.battery_pack = 3;     % P3 (150 kWh)
+% designs{5}.road.battery_charger = 3;  % G3 (60 kW)
+% designs{5}.road.motor = 3;            % M3 (210 kW)
+% designs{5}.road.autonomy = 0;         % non-autonomous
 
-% designs{4}.bike.chassis = 2;          % B2 (1 pax, 17 kg)
-% designs{4}.bike.battery_pack = 2;     % E2 (1.5 kWh)
-% designs{4}.bike.battery_charger = 1;  % G1 (0.2 kW)
-% designs{4}.bike.motor = 1;            % K1 (0.35 kW)
-% designs{3}.autonomy = 0;              % non-autonomous
+% designs{5}.bike.chassis = 2;          % B2 (1 pax, 17 kg)
+% designs{5}.bike.battery_pack = 2;     % E2 (1.5 kWh)
+% designs{5}.bike.battery_charger = 1;  % G1 (0.2 kW)
+% designs{5}.bike.motor = 1;            % K1 (0.35 kW)
+% designs{5}.autonomy = 0;              % non-autonomous
 
-% archTypes{4} = 'mixed';
-% fleetSizes.road{4} = 20; %count of vehicles (20 non-autonomous vehicles)
-% fleetSizes.bike{4} = 60; %count of bikes (60 non-autonomous bikes)
+% archTypes{5} = 'mixed';
+% fleetSizes.road{5} = 20; %count of vehicles (20 non-autonomous vehicles)
+% fleetSizes.bike{5} = 60; %count of bikes (60 non-autonomous bikes)
 
 
 %% -- Execute Model -- %%
