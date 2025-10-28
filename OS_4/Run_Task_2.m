@@ -36,34 +36,66 @@ designs{1}.motor = 1;           % M1 (50 kW)
 designs{1}.autonomy = 2;        % A4 (Level 4)
 archTypes{1} = 'road';
 fleetSizes.road{1} = 25; %count of vehicles
-fleetSizes.bike{1} = 0;
+fleetSizes.bike{1} = 0;  %count of bikes
 
-% Option 2 - TBD
-% designs{2}.chassis = ;         
-% designs{2}.battery_pack = ;    
-% designs{2}.battery_charger = ; 
-% designs{2}.motor = ;          
-% designs{2}.autonomy = ;      
+
+% Option 2 - Autonomous Shuttle Fleet (8-pax road vehicles)
+% designs{2}.chassis = 4;         %C4 (8 pax shuttle) 
+% designs{2}.battery_pack = 3;    %P3 (100kWh)
+% designs{2}.battery_charger = 3; %G3 (50 kW)
+% designs{2}.motor = 3;           %M3 (150 kW)
+% designs{2}.autonomy = 2;        %A4 (Level 4)
 % archTypes{2} = 'road';
-% fleetSizes.road{2} = ; %count of vehicles
-% fleetSizes.bike{2} = ;
+% fleetSizes.road{2} = 15; %count of vehicles (15 shuttles)
+% fleetSizes.bike{2} = 0;  %count of bikes
 
-% Option 3 - All Bike Fleet
-% designs{2}.battery_pack = ;    
-% designs{2}.battery_charger = ; 
-% designs{2}.motor = ;          
-% archTypes{2} = 'bike';
-% fleetSizes.road{2} = 0; %count of vehicles
-% fleetSizes.bike{2} = ;
 
-% Option 4 - TBD
+% Option 3 - Autonomous Bike Fleet
+% designs{3}.chassis = 2;          % B2 (1 pax, 17 kg)
+% designs{3}.battery_pack = 1;     %P1 (1kWh)
+% designs{3}.battery_charger = 2; % G2 (0.6 kW)
+% designs{3}.motor = 1;            %M1 (0.5 kW)
+% designs{3}.autonomy = 1;         % A3 (Level 3)
+% archTypes{3} = 'bike';
+% fleetSizes.road{3} = 0; %count of vehicles
+% fleetSizes.bike{3} = 100; %count of bikes (100 autonomous bikes)
 
-% % Option 5 - Mixed Fleet (Road + Bike)
-% designs{5}.road = designs{1}; % Use the TBD design
-% designs{5}.bike = designs{4}; % Use the TBD design
-% designs{5}.archTypes = 'mixed';
-% fleetSizes{5}.road = 15; % Assumption: 15 road vehicles
-% fleetSizes{5}.bike = 50; % Assumption: 50 bikes
+
+% Option 4 - Mixed Fleet Autonomous (Road + Bike)
+% designs{4}.road.chassis = 4;          % C4 (8 pax)
+% designs{4}.road.battery_pack = 3;     % P3 (150 kWh)
+% designs{4}.road.battery_charger = 3;  % G3 (60 kW)
+% designs{4}.road.motor = 3;            % M3 (210 kW)
+% designs{4}.road.autonomy = 2;         % A4 (Level 4)
+
+% designs{4}.bike.chassis = 2;          % B2 (1 pax, 17 kg)
+% designs{4}.bike.battery_pack = 3;     % E3 (3 kWh)
+% designs{4}.bike.battery_charger = 2;  % G2 (0.6 kW)
+% designs{4}.bike.motor = 2;            % K2 (0.5 kW)
+% designs{3}.autonomy = 1;              % A3 (Level 3)
+
+% archTypes{4} = 'mixed';
+% fleetSizes.road{4} = 20; %count of vehicles (20 shuttles)
+% fleetSizes.bike{4} = 60; %count of bikes (60 autonomous bikes)
+
+
+% Option 5 - Mixed Fleet non-autonomous (Road + Bike)
+% designs{4}.road.chassis = 4;          % C4 (8 pax)
+% designs{4}.road.battery_pack = 3;     % P3 (150 kWh)
+% designs{4}.road.battery_charger = 3;  % G3 (60 kW)
+% designs{4}.road.motor = 3;            % M3 (210 kW)
+% designs{4}.road.autonomy = 0;         % non-autonomous
+
+% designs{4}.bike.chassis = 2;          % B2 (1 pax, 17 kg)
+% designs{4}.bike.battery_pack = 2;     % E2 (1.5 kWh)
+% designs{4}.bike.battery_charger = 1;  % G1 (0.2 kW)
+% designs{4}.bike.motor = 1;            % K1 (0.35 kW)
+% designs{3}.autonomy = 0;              % non-autonomous
+
+% archTypes{4} = 'mixed';
+% fleetSizes.road{4} = 20; %count of vehicles (20 non-autonomous vehicles)
+% fleetSizes.bike{4} = 60; %count of bikes (60 non-autonomous bikes)
+
 
 %% -- Execute Model -- %%
 T = table;
