@@ -1,10 +1,14 @@
 %% -- EM.411 OS 4 Task 3 -- %%
 % This script runs through a range of fleet architectures and generates 
-% the data table required for the Task 3 deliverable.
+% the data table required for part of the Task 3 deliverable.
 % https://github.com/Joel-Pederson/EM_411_repo
 
 %% Scenario:
 % Peak rush-hour traffic in the morning (0800)
+% Model Note: This uses a demand-limited modeling approach. So the
+% performance of the system cannot exceed mean demand as defined in
+% Appendix B. See compuateMAU.m's Compute Daily Passenger Volume section
+% for more info.
 
 %% -- Load Database -- %%
 [roadDB, bikeDB] = load_DB();
@@ -21,78 +25,28 @@ load_factor_per_trip = 0.75; %from appendix B
 max_wait_time_within_boundary_min = 5; %maximum waiting time for transportation within system boundary
 max_wait_time_outside_of_boundary_min = 20; %maximum waiting time for transportation outside of system boundary
 
-%% -- Define Unique Architectures -- %%
+%% -- Initialize Results Storage -- %%
+% Pre-allocate arrays to store the results from every iteration for speed
+num_road_designs = length(roadDB.chassis) * length(roadDB.battery_pack) * ...
+                   length(roadDB.battery_charger) * length(roadDB.motor) * ...
+                   length(roadDB.autonomy);
+num_bike_designs = length(bikeDB.frame) * length(bikeDB.battery_pack) * ...
+                   length(bikeDB.battery_charger) * length(bikeDB.motor);
+total_designs = num_road_designs + num_bike_designs;
 
-designs = {};     % Stores the component indices for each architecture
-archTypes = {};   % Stores the type: 'road' or 'bike'
-fleetSizes = [];  % Stores the fleet size assumption for each architecture
+% Pre-allocate result vectors for speed
+results.Cost = NaN(total_designs, 1);
+results.MAU = NaN(total_designs, 1);
+results.ArchType = cell(total_designs, 1); % To store 'road' or 'bike'
+idx = 1; 
 
-% Option 1 - Ultra Minimal Road Vehicle
-% 'design' must be a struct containing the index for EACH component.
-designs{1}.chassis = 1;         % C1 (2 pax)
-designs{1}.battery_pack = 1;    % P1 (50 kWh)
-designs{1}.battery_charger = 1; % G1 (10 kW)
-designs{1}.motor = 1;           % M1 (50 kW)
-designs{1}.autonomy = 1;        % A4 (Level 3)
-archTypes{1} = 'road';
-fleetSizes.road{1} = 25; %count of vehicles
-fleetSizes.bike{1} = 0;  %count of bikes
+%% -- Initialize Progress Dialog -- %%
+total_designs = num_road_designs + num_bike_designs;
+processed_count = 0; % Counter for updating the dialog
+update_frequency = 50; % How often to update the dialog (every 50 designs)
 
-
-% Option 2 - Autonomous Shuttle Fleet (8-pax road vehicles)
-designs{2}.chassis = 4;         %C4 (8 pax shuttle) 
-designs{2}.battery_pack = 3;    %P3 (150kWh)
-designs{2}.battery_charger = 3; %G3 (60 kW)
-designs{2}.motor = 3;           %M3 (210 kW)
-designs{2}.autonomy = 2;        %A4 (Level 4)
-archTypes{2} = 'road';
-fleetSizes.road{2} = 15; %count of vehicles (15 shuttles)
-fleetSizes.bike{2} = 0;  %count of bikes
-
-
-% Option 3 - Electric Bike Fleet
-designs{3}.chassis = 2;          % B2 (1 pax, 17 kg)
-designs{3}.battery_pack = 3;     % E3 (3 kWh)
-designs{3}.battery_charger = 2;  % G2 (0.6 kW)
-designs{3}.motor = 2;            % K2 (0.5 kW)
-archTypes{3} = 'bike';
-fleetSizes.road{3} = 0; %count of vehicles
-fleetSizes.bike{3} = 100; %count of bikes (100 electric bikes)
-
-
-% Option 4 - Mixed Fleet (Autonomous Road + Electric Bike)
-designs{4}.road.chassis = 4;          % C4 (8 pax)
-designs{4}.road.battery_pack = 3;     % P3 (150 kWh)
-designs{4}.road.battery_charger = 3;  % G3 (60 kW)
-designs{4}.road.motor = 3;            % M3 (210 kW)
-designs{4}.road.autonomy = 2;         % A4 (Level 4)
-
-designs{4}.bike.chassis = 2;          % B2 (1 pax, 17 kg)
-designs{4}.bike.battery_pack = 3;     % E3 (3 kWh)
-designs{4}.bike.battery_charger = 2;  % G2 (0.6 kW)
-designs{4}.bike.motor = 2;            % K2 (0.5 kW)
-
-% archTypes{4} = 'mixed';
-fleetSizes.road{4} = 20; %count of vehicles (20 shuttles)
-fleetSizes.bike{4} = 60; %count of bikes (60 autonomous bikes)
-
-
-% Option 5 - Mixed Fleet Less Autonomy (Road + Bike)
-designs{5}.road.chassis = 4;          % C4 (8 pax)
-designs{5}.road.battery_pack = 3;     % P3 (150 kWh)
-designs{5}.road.battery_charger = 3;  % G3 (60 kW)
-designs{5}.road.motor = 3;            % M3 (210 kW)
-designs{5}.road.autonomy = 3;         % A5 (Level 5)
-
-designs{5}.bike.chassis = 2;          % B2 (1 pax, 17 kg)
-designs{5}.bike.battery_pack = 2;     % E2 (1.5 kWh)
-designs{5}.bike.battery_charger = 1;  % G1 (0.2 kW)
-designs{5}.bike.motor = 1;            % K1 (0.35 kW)
-
-archTypes{5} = 'mixed';
-fleetSizes.road{5} = 20; %count of vehicles (20 non-autonomous vehicles)
-fleetSizes.bike{5} = 60; %count of bikes (60 non-autonomous bikes)
-
+d = uiprogressdlg(figure('Name','Tradespace Exploration'),'Title','Please Wait',... %initialize waitbar GUI
+                  'Message','Starting exploration...','Value',0, 'Cancelable','off');
 
 %% -- Execute Model -- %%
 T = table;
@@ -254,7 +208,7 @@ for ii = 1:length(designs)
         str = sprintf('Design %d does not have a compatable or defined archType. Must be road, bike, or mixed.',ii);
         error(str)
     end
-    [T] = calcualteMAU(T(ii,:));
+    [T.MAU(ii)] = computeMAU(T(ii,:));
 end %end model execution
 
 

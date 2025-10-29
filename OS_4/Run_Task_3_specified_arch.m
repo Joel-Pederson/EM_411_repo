@@ -1,10 +1,14 @@
-%% -- EM.411 OS 4 Task 2 -- %%
-% This script models 5 unique fleet architectures and generates the
-% data table required for the Task 2 deliverable.
+%% -- EM.411 OS 4 Task 3 -- %%
+% This script runs through 5 specified fleet architectures and generates 
+% the data table required for part of the Task 3 deliverable.
 % https://github.com/Joel-Pederson/EM_411_repo
 
 %% Scenario:
 % Peak rush-hour traffic in the morning (0800)
+% Model Note: This uses a demand-limited modeling approach. So the
+% performance of the system cannot exceed mean demand as defined in
+% Appendix B. See compuateMAU.m's Compute Daily Passenger Volume section
+% for more info.
 
 %% -- Load Database -- %%
 [roadDB, bikeDB] = load_DB();
@@ -254,6 +258,7 @@ for ii = 1:length(designs)
         str = sprintf('Design %d does not have a compatable or defined archType. Must be road, bike, or mixed.',ii);
         error(str)
     end
+    [T.MAU(ii)] = computeMAU(T(ii,:));
 end %end model execution
 
 

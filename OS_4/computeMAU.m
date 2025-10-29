@@ -1,4 +1,4 @@
-function [design] = calcualteMAU(design)
+function [design] = computeMAU(design)
 %Compute Multi-Attribute Utility (MAU) function
 %Using Weighted sum aggrigation per reccomendation of professor during MIT SDM SE Lecture 5
 %Inputs: System designs
@@ -6,7 +6,7 @@ function [design] = calcualteMAU(design)
 
 %% -- Define Weights (from Appendix A) -- %%
 weight.passenger_volume = 0.15;
-weight.peak_passsenger_throughput = 0.25;
+weight.peak_passenger_throughput = 0.25;
 weight.average_wait_time = 0.35;
 weight.availability = 0.25;
 
@@ -68,6 +68,8 @@ attribute.passenger_volume = total_daily_volume; % Max possible value is 1140 --
                                                  %table in the appendix?
 
 %% -- Calculate Single-Attribute Utilities (SAUs) -- %%
+% Approach: Use linear interpolation (interp1) to find the utility score 
+% for each performance metric based on the Appendix A utility curves.
 U_vol   = interp1(Passenger_Trips_per_day,   Passenger_Trips_per_day_utility,   attribute.passenger_volume, 'linear', 'extrap'); %linear interpolation
 U_peak  = interp1(Peak_passenger_throughput_per_hour,  Peak_passenger_throughput_per_hour_utility,  attribute.peak_passenger_throughput,'linear', 'extrap');
 U_wait  = interp1(Minutes_average_wait_time,  Minutes_average_wait_time_utility,  attribute.average_wait_time, 'linear', 'extrap');
@@ -80,10 +82,8 @@ U_wait  = max(0, min(U_wait, 1));
 U_avail = max(0, min(U_avail, 1));
 
 %% -- Calculate Final MAU (Weighted Sum) -- %%
-MAU = (weight.passenger_volume * U_vol) + ...
-    (weight.peak_passenger_throughput * U_peak) + ...
-    (weight.average_wait_time * U_wait) + ...
-    (weight.availability * U_avail);
+MAU = (weight.passenger_volume * U_vol) + (weight.peak_passenger_throughput * U_peak) + ...
+      (weight.average_wait_time * U_wait) + (weight.availability * U_avail);
 
 % Clamp final MAU
 MAU = max(0, min(MAU, 1));
