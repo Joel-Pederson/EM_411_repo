@@ -49,7 +49,7 @@ Bike_EV_Design.up_time_h = Bike_EV_Design.range_km / Bike_EV_Design.mean_speed_k
 Bike_EV_Design.down_time_h = Bike_EV_Design.battery_charge_time_h + 0.25;
 Bike_EV_Design.availability = Bike_EV_Design.up_time_h / (Bike_EV_Design.up_time_h + Bike_EV_Design.down_time_h); %dimensionless
 Bike_EV_Design.benchmark_availability = 0.75;
-
+Bike_EV_Design.Pax = frame.Pax;
 %% -- Subfunctions -- %%
     function kmph = mphToKmph(mph)
         kmph = mph * 1.60934; % Conversion factor

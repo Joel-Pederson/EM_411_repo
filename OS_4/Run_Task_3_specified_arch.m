@@ -39,8 +39,8 @@ designs{1}.battery_charger = 1; % G1 (10 kW)
 designs{1}.motor = 1;           % M1 (50 kW)
 designs{1}.autonomy = 1;        % A4 (Level 3)
 archTypes{1} = 'road';
-fleetSizes.road{1} = 25; %count of vehicles
-fleetSizes.bike{1} = 0;  %count of bikes
+fleetSizes.road{1} = 25;        %count of vehicles
+fleetSizes.bike{1} = 0;         %count of bikes
 
 
 % Option 2 - Autonomous Shuttle Fleet (8-pax road vehicles)
@@ -50,52 +50,38 @@ designs{2}.battery_charger = 3; %G3 (60 kW)
 designs{2}.motor = 3;           %M3 (210 kW)
 designs{2}.autonomy = 2;        %A4 (Level 4)
 archTypes{2} = 'road';
-fleetSizes.road{2} = 15; %count of vehicles (15 shuttles)
-fleetSizes.bike{2} = 0;  %count of bikes
+fleetSizes.road{2} = 15;        %count of vehicles (15 shuttles)
+fleetSizes.bike{2} = 0;         %count of bikes
 
 
 % Option 3 - Electric Bike Fleet
-designs{3}.frame = 2;            % B2 (1 pax, 17 kg)
+designs{3}.frame = 3;            % B3 (2 pax, 35 kg) 
 designs{3}.battery_pack = 3;     % E3 (3 kWh)
 designs{3}.battery_charger = 2;  % G2 (0.6 kW)
 designs{3}.motor = 2;            % K2 (0.5 kW)
 archTypes{3} = 'bike';
-fleetSizes.road{3} = 0; %count of vehicles
-fleetSizes.bike{3} = 100; %count of bikes (100 electric bikes)
+fleetSizes.road{3} = 0;          %count of vehicles
+fleetSizes.bike{3} = 100;        %count of bikes (100 electric bikes)
 
 
 % Option 4 - Mixed Fleet (Autonomous Road + Electric Bike)
-designs{4}.road.chassis = 4;          % C4 (8 pax)
-designs{4}.road.battery_pack = 3;     % P3 (150 kWh)
-designs{4}.road.battery_charger = 3;  % G3 (60 kW)
-designs{4}.road.motor = 3;            % M3 (210 kW)
-designs{4}.road.autonomy = 2;         % A4 (Level 4)
-
-designs{4}.bike.frame = 2;            % B2 (1 pax, 17 kg)
-designs{4}.bike.battery_pack = 3;     % E3 (3 kWh)
-designs{4}.bike.battery_charger = 2;  % G2 (0.6 kW)
-designs{4}.bike.motor = 2;            % K2 (0.5 kW)
-
+designs{4}.road = designs{2}; % Use Arch 2 shuttle
+designs{4}.bike = designs{3}; % Use Arch 3 bike 
 archTypes{4} = 'mixed';
-fleetSizes.road{4} = 20; %count of vehicles (20 shuttles)
-fleetSizes.bike{4} = 60; %count of bikes (60 autonomous bikes)
-
+fleetSizes.road{4} = 20;              %count of vehicles (20 shuttles)
+fleetSizes.bike{4} = 60;              %count of bikes (60 autonomous bikes)
 
 % Option 5 - Mixed Fleet Less Autonomy (Road + Bike)
-designs{5}.road.chassis = 4;          % C4 (8 pax)
-designs{5}.road.battery_pack = 3;     % P3 (150 kWh)
-designs{5}.road.battery_charger = 3;  % G3 (60 kW)
-designs{5}.road.motor = 3;            % M3 (210 kW)
-designs{5}.road.autonomy = 3;         % A5 (Level 5)
-
-designs{5}.bike.frame = 2;            % B2 (1 pax, 17 kg)
-designs{5}.bike.battery_pack = 2;     % E2 (1.5 kWh)
+designs{5}.road = designs{2};         % Use Arch 2 shuttle
+designs{5}.road.autonomy = 3;         % ...but with A5 (Level 5)
+designs{5}.bike = designs{3};         % Use Arch 3 bike 
+designs{5}.bike.battery_pack = 2;     % E2 (1.5 kWh) <-- NOTE: This bike is now B3+E2
 designs{5}.bike.battery_charger = 1;  % G1 (0.2 kW)
 designs{5}.bike.motor = 1;            % K1 (0.35 kW)
-
 archTypes{5} = 'mixed';
-fleetSizes.road{5} = 20; %count of vehicles (20 non-autonomous vehicles)
-fleetSizes.bike{5} = 60; %count of bikes (60 non-autonomous bikes)
+fleetSizes.road{5} = 20;              %count of vehicles (20 non-autonomous vehicles)
+fleetSizes.bike{5} = 60;              %count of bikes (60 non-autonomous bikes)
+
 
 
 %% -- Execute Model -- %%
@@ -113,7 +99,7 @@ for ii = 1:length(designs)
         [Road_EV_Design, cost, isValid] = calculateRoadVehicle(design, roadDB);
         
         if ~isValid 
-            str = sprintf('WARNING: Road Arch %d (Chassis %s, Battery %s) is INVALID. Must replace it. Skipping for now...\n', ...
+            str = sprintf('Road Arch %d (Chassis %s, Battery %s) is INVALID. Must replace it. Skipping for now...\n', ...
                 ii, roadDB.chassis(design.chassis).Name, roadDB.battery_pack(design.battery_pack).Name);
             warning(str);
             continue
@@ -158,7 +144,7 @@ for ii = 1:length(designs)
         [Bike_EV_Design, cost, isValid] = calculateBikeVehicle(design, bikeDB);
         
         if ~isValid
-            str = sprintf('WARNING: Bike Arch %d (Frame %s, Battery %s) is INVALID. Must replace it. Skipping for now...\n', ...
+            str = sprintf('Bike Arch %d (Frame %s, Battery %s) is INVALID. Must replace it. Skipping for now...\n', ...
                 ii, bikeDB.frame(design.frame).Name, bikeDB.battery_pack(design.battery_pack).Name);
             warning(str);
             continue
@@ -199,7 +185,7 @@ for ii = 1:length(designs)
         [Bike_EV_Design, bikeVehicle_cost, bike_isValid] = calculateBikeVehicle(design.bike, bikeDB);
         
         if ~road_isValid || ~bike_isValid
-            str = sprintf('WARNING: Mixed Arch %d has an invalid component. Must replace it. Skipping for now...\n', ii);
+            str = sprintf('Mixed Arch %d has an invalid component. Must replace it. Skipping for now...\n', ii);
             warning(str);
             continue
         end
@@ -270,7 +256,7 @@ varNames = strrep(varNames, '_', ' ');
 T.Properties.VariableNames = varNames;
 
 targetDir = fullfile('..', '..', 'OS 4'); % Goes up two levels, looks for "OS 4"
-outputFileName = 'Task_2_Analysis.xlsx';
+outputFileName = 'Task_3_Analysis.xlsx';
 fullOutputPath = fullfile(targetDir, outputFileName);
 if ~isfolder(targetDir)
     fprintf('Directory "%s" not found. Creating it...\n', targetDir);

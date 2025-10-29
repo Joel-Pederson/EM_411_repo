@@ -1,4 +1,4 @@
-function [design] = computeMAU(design)
+function [MAU] = computeMAU(design)
 %Compute Multi-Attribute Utility (MAU) function
 %Using Weighted sum aggrigation per reccomendation of professor during MIT SDM SE Lecture 5
 %Inputs: System designs
@@ -60,12 +60,7 @@ for hour_demand = demand_profile_per_hr
     passengers_served_in_block = min(hour_demand, attribute.peak_passenger_throughput) * 2; % One Block = 2 hr
     total_daily_volume = total_daily_volume + passengers_served_in_block;
 end
-attribute.passenger_volume = total_daily_volume; % Max possible value is 1140 --> IS THIS RIGHT TO DO???
-                                                 %Should this be max
-                                                 %possible for the given
-                                                 %design? or max possible
-                                                 %given the passenger use
-                                                 %table in the appendix?
+attribute.passenger_volume = total_daily_volume; % Max possible value is 1140 (demand-limited modeling assumption)
 
 %% -- Calculate Single-Attribute Utilities (SAUs) -- %%
 % Approach: Use linear interpolation (interp1) to find the utility score 
