@@ -82,6 +82,8 @@ fleetSizes.bike{5} = 60;              %count of bikes (60 non-autonomous bikes)
 %% -- Execute Model -- %%
 T = table;
 avgTripTime_h = average_trip_time_min / 60; % Convert to hours for simplicity
+warning('off', 'MATLAB:table:RowsAddedExistingVars');% Suppress the specific harmless warning 
+
 for ii = 1:length(designs)
     design = designs{ii};
     archType = archTypes{ii};
@@ -240,7 +242,7 @@ for ii = 1:length(designs)
         error(str)
     end
 end %end model execution
-
+warning('on', 'MATLAB:table:RowsAddedExistingVars'); % Turn the warning back on (good practice)
 
 %% -- Output Table to an Excel file -- %%
 % Prepare variable names for Excel 
