@@ -1,6 +1,6 @@
-%% -- EM.411 OS 4 Task 2 -- %%
-% This script models 5 unique fleet architectures and generates the
-% data table required for the Task 2 deliverable.
+%% -- EM.411 OS 4 Task 3 -- %%
+% This script runs through a range of fleet architectures and generates 
+% the data table required for the Task 3 deliverable.
 % https://github.com/Joel-Pederson/EM_411_repo
 
 %% Scenario:
@@ -33,7 +33,7 @@ designs{1}.chassis = 1;         % C1 (2 pax)
 designs{1}.battery_pack = 1;    % P1 (50 kWh)
 designs{1}.battery_charger = 1; % G1 (10 kW)
 designs{1}.motor = 1;           % M1 (50 kW)
-designs{1}.autonomy = 2;        % A4 (Level 4)
+designs{1}.autonomy = 1;        % A4 (Level 3)
 archTypes{1} = 'road';
 fleetSizes.road{1} = 25; %count of vehicles
 fleetSizes.bike{1} = 0;  %count of bikes
@@ -60,7 +60,7 @@ fleetSizes.road{3} = 0; %count of vehicles
 fleetSizes.bike{3} = 100; %count of bikes (100 electric bikes)
 
 
-% Option 4 - Mixed Fleet (Fully Autonomous Road + Electric Bike)
+% Option 4 - Mixed Fleet (Autonomous Road + Electric Bike)
 designs{4}.road.chassis = 4;          % C4 (8 pax)
 designs{4}.road.battery_pack = 3;     % P3 (150 kWh)
 designs{4}.road.battery_charger = 3;  % G3 (60 kW)
@@ -82,7 +82,7 @@ designs{5}.road.chassis = 4;          % C4 (8 pax)
 designs{5}.road.battery_pack = 3;     % P3 (150 kWh)
 designs{5}.road.battery_charger = 3;  % G3 (60 kW)
 designs{5}.road.motor = 3;            % M3 (210 kW)
-designs{5}.road.autonomy = 3;         % A3 (Level 5)
+designs{5}.road.autonomy = 3;         % A5 (Level 5)
 
 designs{5}.bike.chassis = 2;          % B2 (1 pax, 17 kg)
 designs{5}.bike.battery_pack = 2;     % E2 (1.5 kWh)
@@ -254,6 +254,7 @@ for ii = 1:length(designs)
         str = sprintf('Design %d does not have a compatable or defined archType. Must be road, bike, or mixed.',ii);
         error(str)
     end
+    [T] = calcualteMAU(T(ii,:));
 end %end model execution
 
 
