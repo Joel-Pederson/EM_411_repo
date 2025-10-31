@@ -69,7 +69,7 @@ fleetSizes.bike{4} = 60;              %count of bikes (60 autonomous bikes)
 
 % Option 5 - Mixed Fleet Less Autonomy (Road + Bike)
 designs{5}.road = designs{2};         % Use Arch 2 shuttle
-designs{5}.road.autonomy = 3;         % ...but with A5 (Level 5)
+designs{5}.road.autonomy = 3;         % ...but with A3 (Level 3)
 designs{5}.bike = designs{3};         % Use Arch 3 bike 
 designs{5}.bike.battery_pack = 2;     % E2 (1.5 kWh) <-- NOTE: This bike is now B3+E2
 designs{5}.bike.battery_charger = 1;  % G1 (0.2 kW)
