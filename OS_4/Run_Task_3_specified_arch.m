@@ -83,7 +83,6 @@ fleetSizes.road{5} = 20;              %count of vehicles (20 non-autonomous vehi
 fleetSizes.bike{5} = 60;              %count of bikes (60 non-autonomous bikes)
 
 
-
 %% -- Execute Model -- %%
 T = table;
 avgTripTime_h = average_trip_time_min / 60; % Convert to hours for simplicity
