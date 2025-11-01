@@ -1,15 +1,99 @@
-%% -- EM.411 OS 4 Task 3 - Full Tradespace Exploration  -- %%
+%% -- EM.411 OS 4 Task 4 - Full Tradespace Exploration -- %%
 % Explores pure road, pure bike, and strategic mixed fleets using parfor.
 % Calculates fleet size, cost, and utility for each valid design.
 % Dependencies: MATLAB Parallel Computing Toolbox
 % https://github.com/Joel-Pederson/EM_411_repo
 %% Scenario:
-% Peak rush-hour traffic in the morning (150 pass/hr at 0800 hrs)
+% Off-peak traffic scenario (50 pass/hr at 2000 hrs)
 % Model Note: This uses a demand-limited modeling approach. So the
 % performance of the system cannot exceed mean demand as defined in appendix B
 clear all; close all;
+
 %% -- Load Database -- %%
 [roadDB, bikeDB] = load_DB(); 
+
+% -- Define Reference Architectures (from Task 3) -- %%
+% 8 total architectures (5 baseline + 3 Pareto)
+ref_designs = {};     % Stores the component indices for each architecture
+ref_archTypes = {};   % Stores the type: 'road' or 'bike'
+ref_fleetSizes = struct();  % Stores the fleet size assumption for each architecture
+
+%Arch 1: Ultra Minimal Road Vehicle 
+ref_designs{1}.chassis = 1;         % C1 (2 pax)
+ref_designs{1}.battery_pack = 1;    % P1 (50 kWh)
+ref_designs{1}.battery_charger = 1; % G1 (10 kW)
+ref_designs{1}.motor = 1;           % M1 (50 kW)
+ref_designs{1}.autonomy = 1;        % A3 (Level 3)
+ref_archTypes{1} = 'road';
+ref_fleetSizes.road{1} = 19;        %count of vehicles
+ref_fleetSizes.bike{1} = 0;         %count of bikes
+
+%Arch 2: Autonomous Shuttle Fleet 
+ref_designs{2}.chassis = 4;         %C4 (8 pax shuttle) 
+ref_designs{2}.battery_pack = 3;    %P3 (150kWh)
+ref_designs{2}.battery_charger = 3; %G3 (60 kW)
+ref_designs{2}.motor = 3;           %M3 (210 kW)
+ref_designs{2}.autonomy = 2;        %A4 (Level 4)
+ref_archTypes{2} = 'road';
+ref_fleetSizes.road{2} = 4;        %count of vehicles
+ref_fleetSizes.bike{2} = 0;         %count of bikes
+
+%Arch 3: Electric Bike Fleet
+ref_designs{3}.frame = 3;            % B3 (2 pax, 35 kg) 
+ref_designs{3}.battery_pack = 2;     % E2 (1.5 kWh) 
+ref_designs{3}.battery_charger = 2;  % G2 (0.6 kW)
+ref_designs{3}.motor = 2;            % K2 (0.5 kW)
+ref_archTypes{3} = 'bike';
+ref_fleetSizes.road{3} = 0;          %count of vehicles
+ref_fleetSizes.bike{3} = 26;        %count of bikes
+
+%Arch 4: Mixed Fleet (Autonomous Road + Electric Bike) 
+ref_designs{4}.road = ref_designs{1};        % Use Arch 1
+ref_designs{4}.bike = ref_designs{3};        % Use Arch 3 bike 
+ref_archTypes{4} = 'mixed';
+ref_fleetSizes.road{4} = 15;              %count of vehicles
+ref_fleetSizes.bike{4} = 5;              %count of bikes
+
+%Arch 5: Mixed Fleet More Autonomy (Road + Bike)
+ref_designs{5}.road = ref_designs{2};         % Use Arch 2 shuttle
+ref_designs{5}.road.autonomy = 3;         % ...but with A5 (Level 5)
+ref_designs{5}.bike = ref_designs{3};         % Use Arch 3 bike 
+ref_designs{5}.bike.battery_pack = 2;     % E2 (1.5 kWh)
+ref_designs{5}.bike.battery_charger = 1;  % G1 (0.2 kW)
+ref_designs{5}.bike.motor = 1;            % K1 (0.35 kW)
+ref_archTypes{5} = 'mixed';
+ref_fleetSizes.road{5} = 3;              %count of vehicles
+ref_fleetSizes.bike{5} = 10;              %count of bikes
+
+%Arch 6: Task 3 Pareto Point 1 
+ref_designs{6}.chassis = 8;         %C8 (30 pax shuttle) 
+ref_designs{6}.battery_pack = 1;    %P1 (50 kWh)
+ref_designs{6}.battery_charger = 3; %G3 (60 kW)
+ref_designs{6}.motor = 1;           %M1 (50 kW)
+ref_designs{6}.autonomy = 1;        %A3 (Level 3)
+ref_archTypes{6} = 'road';
+ref_fleetSizes.road{6} = 1;         %count of vehicles (1 shuttle)
+ref_fleetSizes.bike{6} = 0;         %count of bikes
+
+%Arch 7: Task 3 Pareto Point 2 
+ref_designs{7}.chassis = 6;         %C6 (16 pax shuttle) 
+ref_designs{7}.battery_pack = 1;    %P1 (50 kWh)
+ref_designs{7}.battery_charger = 3; %G3 (60 kW)
+ref_designs{7}.motor = 1;           %M1 (50 kW)
+ref_designs{7}.autonomy = 1;        %A3 (Level 3)
+ref_archTypes{7} = 'road';
+ref_fleetSizes.road{7} = 2;         %count of vehicles (2 shuttles)
+ref_fleetSizes.bike{7} = 0;         %count of bikes
+
+%Arch 8: Task 3 Pareto Point 3
+ref_designs{8}.chassis = 7;         %C7 (20 pax shuttle) 
+ref_designs{8}.battery_pack = 6;    %P6 (310 kWh)
+ref_designs{8}.battery_charger = 3; %G3 (60 kW)
+ref_designs{8}.motor = 1;           %M1 (50 kW)
+ref_designs{8}.autonomy = 1;        %A3 (Level 3)
+ref_archTypes{8} = 'road';
+ref_fleetSizes.road{8} = 2;         %count of vehicles (2 shuttles)
+ref_fleetSizes.bike{8} = 0;         %count of bikes
 
 %% -- Define Fleet-Level Model Assumptions -- %%
 %Values from Table 1 unless otherwise noted
@@ -17,7 +101,7 @@ max_travel_time_min = 7; %max transportation time
 dwell_time_s = 60; %time for passengers get in and out
 average_trip_time_min = (max_travel_time_min + (dwell_time_s / 60));
 avgTripTime_h = average_trip_time_min / 60;
-peak_demand_pass_hr = 150; % Target throughput
+peak_demand_pass_hr = 50; % Target throughput
 load_factor_per_trip = 0.75; %from appendix B
 
 mix_ratios_road = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]; % Road contribution target
@@ -389,11 +473,104 @@ pause(0.5); % Brief pause to see final message
 close(d); % Close the dialog
 close(fig);
 
-fprintf('Exploration complete. %d valid architectures found.\n', final_idx);
+%% -- Analyze Reference Architectures (from Task 3) -- %%
+% Re-run the 8 specific architectures from Task 3,
+% using their fixed fleet sizes
 
+%Pre-allocate the reference table 
+num_ref_designs = length(ref_designs);
+varNames_ref = [
+    "Cost", "Throughput", "WaitTime", "Road_Avail", "Bike_Avail", ...
+    "Num_Road", "Num_Bike", "MAU"
+];
+varTypes_ref = [
+    "double", "double", "double", "double", "double", ...
+    "double", "double", "double"
+];
+ref_T = table('Size', [num_ref_designs, length(varNames_ref)], ...
+              'VariableTypes', varTypes_ref, 'VariableNames', varNames_ref);
+
+%Loop through these 8 architectures 
+for ii = 1:length(ref_designs)
+    design = ref_designs{ii};
+    archType = ref_archTypes{ii};
+    fleetSize_road = ref_fleetSizes.road{ii};
+    fleetSize_bike = ref_fleetSizes.bike{ii};
+    
+    if strcmp(archType, 'road')
+        [Road_EV_Design, cost, isValid] = calculateRoadVehicle(design, roadDB);
+        if ~isValid, continue; end
+        
+        passengersPerTrip = Road_EV_Design.Pax * load_factor_per_trip;
+        singleVehicleThroughput = passengersPerTrip / avgTripTime_h;
+        availableVehicles = fleetSize_road * Road_EV_Design.availability;
+        fleetThroughput_passengers_hr = availableVehicles * singleVehicleThroughput;
+        
+        ref_T.Cost(ii) = cost.total_vehicle_cost * fleetSize_road;
+        ref_T.Throughput(ii) = fleetThroughput_passengers_hr;
+        ref_T.WaitTime(ii) = 0.5 * (60 / (fleetThroughput_passengers_hr / passengersPerTrip));
+        ref_T.Road_Avail(ii) = Road_EV_Design.availability;
+        ref_T.Bike_Avail(ii) = 0;
+        ref_T.Num_Road(ii) = fleetSize_road;
+        ref_T.Num_Bike(ii) = 0;
+        
+    elseif strcmp(archType, 'bike')
+        [Bike_EV_Design, cost, isValid] = calculateBikeVehicle(design, bikeDB);
+        if ~isValid, continue; end
+        
+        passengersPerTrip = Bike_EV_Design.Pax * load_factor_per_trip;
+        singleVehicleThroughput = passengersPerTrip / avgTripTime_h;
+        availableVehicles = fleetSize_bike * Bike_EV_Design.availability;
+        fleetThroughput_passengers_hr = availableVehicles * singleVehicleThroughput;
+        ref_T.Cost(ii) = cost.total_vehicle_cost * fleetSize_bike;
+        ref_T.Throughput(ii) = fleetThroughput_passengers_hr;
+        ref_T.WaitTime(ii) = 0.5 * (60 / (fleetThroughput_passengers_hr / passengersPerTrip));
+        ref_T.Road_Avail(ii) = 0;
+        ref_T.Bike_Avail(ii) = Bike_EV_Design.availability;
+        ref_T.Num_Road(ii) = 0;
+        ref_T.Num_Bike(ii) = fleetSize_bike;
+        
+    elseif strcmp(archType, 'mixed')
+        [Road_EV_Design, roadVehicle_cost, road_isValid] = calculateRoadVehicle(design.road, roadDB);
+        [Bike_EV_Design, bikeVehicle_cost, bike_isValid] = calculateBikeVehicle(design.bike, bikeDB);
+        if ~road_isValid || ~bike_isValid, continue; end
+        
+        passengersPerTrip_road = Road_EV_Design.Pax * load_factor_per_trip;
+        singleVehicleThroughput_road = passengersPerTrip_road / avgTripTime_h;
+        availableVehicles_road = fleetSize_road * Road_EV_Design.availability;
+        fleetThroughput_road = availableVehicles_road * singleVehicleThroughput_road;
+        
+        passengersPerTrip_bike = Bike_EV_Design.Pax * load_factor_per_trip;
+        singleVehicleThroughput_bike = passengersPerTrip_bike / avgTripTime_h;
+        availableVehicles_bike = fleetSize_bike * Bike_EV_Design.availability;
+        fleetThroughput_bike = availableVehicles_bike * singleVehicleThroughput_bike;
+        totalFleetCost = (roadVehicle_cost.total_vehicle_cost * fleetSize_road) + (bikeVehicle_cost.total_vehicle_cost * fleetSize_bike);
+        totalFleetThroughput = fleetThroughput_road + fleetThroughput_bike;
+        totalFleetTripsPerHr = (fleetThroughput_road / passengersPerTrip_road) + (fleetThroughput_bike / passengersPerTrip_bike);
+        
+        ref_T.Cost(ii) = totalFleetCost;
+        ref_T.Throughput(ii) = totalFleetThroughput;
+        ref_T.WaitTime(ii) = 0.5 * (60 / totalFleetTripsPerHr);
+        ref_T.Road_Avail(ii) = Road_EV_Design.availability;
+        ref_T.Bike_Avail(ii) = Bike_EV_Design.availability;
+        ref_T.Num_Road(ii) = fleetSize_road;
+        ref_T.Num_Bike(ii) = fleetSize_bike;
+    end
+    
+    %Calculate MAU for this reference point
+    design_metrics = struct();
+    design_metrics.FleetThroughput_pass_hr = ref_T.Throughput(ii);
+    design_metrics.AvgWaitTime_min = ref_T.WaitTime(ii);
+    design_metrics.Road_Availability = ref_T.Road_Avail(ii);
+    design_metrics.Bike_Availability = ref_T.Bike_Avail(ii);
+    design_metrics.Fleet_Composition_Road_Vehicles = ref_T.Num_Road(ii);
+    design_metrics.Fleet_Composition_Bike_Vehicles = ref_T.Num_Bike(ii);
+    
+    ref_T.MAU(ii) = computeMAU(design_metrics);
+end
 %% -- Plot the Tradespace -- %%
 % Remove unused pre-allocated space and NaN values
-valid_indices = 1:final_idx; % Use indices up to the last valid one found
+valid_indices = 1:final_idx; 
 Cost = results_cost(valid_indices);
 MAU = results_mau(valid_indices);
 Type = results_arch_type(valid_indices);
@@ -401,73 +578,70 @@ Specs = results_specs(valid_indices);
 FleetSizeRoad = results_fleet_road(valid_indices);
 FleetSizeBike = results_fleet_bike(valid_indices);
 
-% Define High-Contrast Colors 
-plot_colors = [ ...
-    0.84, 0.37, 0.0;   % 1. 'Bike' (Burnt Orange) - Will be plotted last
-    0.34, 0.34, 0.34;  % 2. 'Mixed' (Dark Gray)
-    0, 0.45, 0.70      % 3. 'Road' (Strong Blue)
-];
+%Define High-Contrast Colors
+color_bike = [0.84, 0.37, 0.0];   
+color_mixed = [0.34, 0.34, 0.34];  
+color_road = [0, 0.45, 0.70];     
 
-% Get the specific colors for easier reference
-color_bike = plot_colors(1, :);
-color_mixed = plot_colors(2, :);
-color_road = plot_colors(3, :);
-
-% Create the plot in layers 
 figure;
-hold on; % Turn hold on first
+hold on; 
 
-% Find indices for each type
+%Plot scatterers 
 idx_bike = strcmp(Type, 'Bike');
 idx_road = strcmp(Type, 'Road');
 idx_mixed = strcmp(Type, 'Mixed');
+scatter(Cost(idx_mixed) / 1e6, MAU(idx_mixed), 15, color_mixed, '.'); 
+scatter(Cost(idx_road) / 1e6, MAU(idx_road), 12, color_road, '.');    
+scatter(Cost(idx_bike) / 1e6, MAU(idx_bike), 25, color_bike, '.'); 
 
-% Plot Mixed Fleet 
-scatter(Cost(idx_mixed) / 1e6, MAU(idx_mixed), 16, color_mixed, '.'); % Slightly larger size 15 dot
-
-% Plot Bikes and Roads 
-scatter(Cost(idx_bike) / 1e6, MAU(idx_bike), 16, color_bike, '.'); % Size 12 dot
-scatter(Cost(idx_road) / 1e6, MAU(idx_road), 16, color_road, '.'); % Size 12 dot
-
-% Add Labels and Utopia Point
 xlabel('Total Fleet Cost ($ Millions)');
 ylabel('Multi-Attribute Utility (MAU)');
-title(sprintf('Task 3: Tradespace Exploration (Cost vs. Utility)\n%d Valid Architectures Found', final_idx));
+title(sprintf('Task 4: Off-Peak Scenario Tradespace (Cost vs. Utility)\n%d Valid Architectures Found', final_idx));
 grid on; box on;
-
-% Add Utopia Point
-hold on;
 plot(0, 1, 'ksq', 'MarkerSize', 10, 'MarkerFaceColor', 'g');
-%text(max(Cost/1e6)*0.01, 0.98, 'Utopia Point', 'FontWeight', 'bold');
 
-% Identify and Plot Pareto Frontier (Approximate) using Brute Force
-isPareto = true(length(Cost), 1); % Initialize a logical array to track Pareto optimal points
+%Identify and Plot Pareto Frontier (for the new off-peak tradespace)
+isPareto = true(length(Cost), 1); 
 for i = 1:length(Cost)
     for j = 1:length(Cost)
-        if i == j, continue; end % Skip comparison with itself
-        % Check if point j dominates point i
+        if i == j, continue; end 
         if (Cost(j) <= Cost(i)) && (MAU(j) >= MAU(i)) && ((Cost(j) < Cost(i)) || (MAU(j) > MAU(i)))
-            %Test 1: is arch j cheaper or the same price as arch i?
-            %Test 2: AND is arch j utilitiy score higher or equal to arch i?
-            %Test 3: AND is arch j strictly cheaper OR strictly better?
-            
-            isPareto(i) = false; % Mark point i as not Pareto optimal
-            break; % Exit inner loop as we found a dominating point
+            isPareto(i) = false; 
+            break; 
         end
     end
 end
-% Identify the indices of Pareto optimal solutions
 paretoIndices = find(isPareto);
-% Sort the costs of the Pareto optimal solutions
 [paretoCostSorted, sortOrder] = sort(Cost(paretoIndices));
-% Sort the corresponding MAU values based on the sorted order of costs
 paretoMAUSorted = MAU(paretoIndices(sortOrder));
-
 plot(paretoCostSorted / 1e6, paretoMAUSorted, 'k-', 'LineWidth', 1.5, 'DisplayName', 'Pareto Frontier');
-legend('Road Vehicles', 'Bike Vehicles', 'Mixed Fleets', 'Utopia Point','Pareto Frontier', 'Location', 'southeast');
+
+%Plot Task 3 Reference Points
+num_baseline = 5; %hand-picked ones
+num_pareto = length(ref_designs) - num_baseline; %Task 3 Pareto
+
+%Plot the 5 Baseline Architectures 
+plot(ref_T.Cost(1:num_baseline) / 1e6, ref_T.MAU(1:num_baseline), ...
+     'k*', ... 
+     'MarkerSize', 12, ...
+     'LineWidth', 1.5, ...
+     'DisplayName', 'Task 3 Baseline Archs');
+     
+%Plot the 3 Pareto Architectures
+if num_pareto > 0
+    plot(ref_T.Cost(num_baseline+1:end) / 1e6, ref_T.MAU(num_baseline+1:end), ...
+         'rd', ...
+         'MarkerSize', 10, ...
+         'MarkerFaceColor', 'r', ...
+         'LineWidth', 1.5, ...
+         'DisplayName', 'Task 3 Pareto Archs');
+end
+
+legend('Mixed Fleets', 'Road Vehicles', 'Bike Vehicles', 'Utopia Point', ...
+       'Off-Peak Pareto Frontier', 'Task 3 Baseline Archs', 'Task 3 Pareto Archs', ...
+       'Location', 'southeast');
+%ylim([min(MAU) - 0.05, 1.05]); % Pad the y-axis
 hold off;
-% Set the y-axis limits to have a buffer below the min MAU value
-%ylim([min(MAU) - 0.02, 1.01]);
 
 %% -- Output Table to an Excel file and Save Plot -- %%
 T_results = table(Cost, MAU, isPareto, Type, Specs, FleetSizeRoad, FleetSizeBike, ...
@@ -478,7 +652,7 @@ varNames = strrep(varNames, '_', ' ');
 T_results.Properties.VariableNames = varNames;
 
 targetDir = fullfile('..', '..', 'OS 4');
-outputFileName = 'Task_3_All_Architectures_Parallel.xlsx'; % Renamed file
+outputFileName = 'Task_4_All_Architectures_Parallel.xlsx'; % Renamed file
 fullOutputPath = fullfile(targetDir, outputFileName);
 if ~isfolder(targetDir)
     fprintf('Directory "%s" not found. Creating it...\n', targetDir);
@@ -490,8 +664,8 @@ fprintf('\nFull results table saved to %s\n', fullOutputPath);
 % Save the Tradespace Plot 
 figHandle = gcf;
 
-plotFileName_fig = 'Task_3_All_Arch_Pareto_Plot.fig';
-plotFileName_tif = 'Task_3_All_Arch_Pareto_Plot.tif';
+plotFileName_fig = 'Task_4_All_Arch_Pareto_Plot.fig';
+plotFileName_tif = 'Task_4_All_Arch_Pareto_Plot.tif';
 
 fullPlotPath_fig = fullfile(targetDir, plotFileName_fig);
 savefig(figHandle, fullPlotPath_fig);

@@ -5,6 +5,7 @@
 
 %% Scenario:
 % Peak rush-hour traffic in the morning (0800)
+clear all; close all;
 
 %% -- Load Database -- %%
 [roadDB, bikeDB] = load_DB();
@@ -35,7 +36,7 @@ designs{1}.battery_charger = 1; % G1 (10 kW)
 designs{1}.motor = 1;           % M1 (50 kW)
 designs{1}.autonomy = 1;        % A4 (Level 3)
 archTypes{1} = 'road';
-fleetSizes.road{1} = 25;        %count of vehicles
+fleetSizes.road{1} = 19;        %count of vehicles (19 cars)
 fleetSizes.bike{1} = 0;         %count of bikes
 
 
@@ -46,28 +47,28 @@ designs{2}.battery_charger = 3; %G3 (60 kW)
 designs{2}.motor = 3;           %M3 (210 kW)
 designs{2}.autonomy = 2;        %A4 (Level 4)
 archTypes{2} = 'road';
-fleetSizes.road{2} = 15;        %count of vehicles (15 shuttles)
+fleetSizes.road{2} = 4;         %count of vehicles (4 shuttles)
 fleetSizes.bike{2} = 0;         %count of bikes
 
 
 % Option 3 - Electric Bike Fleet
-designs{3}.frame = 3;            % B3 (2 pax, 35 kg) 
-designs{3}.battery_pack = 3;     % E3 (3 kWh)
+designs{3}.frame = 3;            % B3 (2 pax, 35 kg)
+designs{3}.battery_pack = 2;     % E2 (1.5 kWh) 
 designs{3}.battery_charger = 2;  % G2 (0.6 kW)
 designs{3}.motor = 2;            % K2 (0.5 kW)
 archTypes{3} = 'bike';
-fleetSizes.road{3} = 0;          %count of vehicles
-fleetSizes.bike{3} = 100;        %count of bikes (100 electric bikes)
+fleetSizes.road{3} = 0;           
+fleetSizes.bike{3} = 26;         %count of bikes (26 electric bikes)
 
 
 % Option 4 - Mixed Fleet (Autonomous Road + Electric Bike)
-designs{4}.road = designs{2}; % Use Arch 2 shuttle
-designs{4}.bike = designs{3}; % Use Arch 3 bike 
+designs{4}.road = designs{1};         % Use Arch 1 shuttle
+designs{4}.bike = designs{3};         % Use Arch 3 bike 
 archTypes{4} = 'mixed';
-fleetSizes.road{4} = 20;              %count of vehicles (20 shuttles)
-fleetSizes.bike{4} = 60;              %count of bikes (60 autonomous bikes)
+fleetSizes.road{4} = 15;              %count of vehicles (15 cars)
+fleetSizes.bike{4} = 5;              %count of bikes (5 autonomous bikes)
 
-% Option 5 - Mixed Fleet Less Autonomy (Road + Bike)
+% Option 5 - Mixed Fleet More Autonomy (Road + Bike)
 designs{5}.road = designs{2};         % Use Arch 2 shuttle
 designs{5}.road.autonomy = 3;         % ...but with A5 (Level 5)
 designs{5}.bike = designs{3};         % Use Arch 3 bike 
@@ -75,8 +76,8 @@ designs{5}.bike.battery_pack = 2;     % E2 (1.5 kWh) <-- NOTE: This bike is now 
 designs{5}.bike.battery_charger = 1;  % G1 (0.2 kW)
 designs{5}.bike.motor = 1;            % K1 (0.35 kW)
 archTypes{5} = 'mixed';
-fleetSizes.road{5} = 20;              %count of vehicles (20 non-autonomous vehicles)
-fleetSizes.bike{5} = 60;              %count of bikes (60 non-autonomous bikes)
+fleetSizes.road{5} = 3;               %count of vehicles (3 shuttle)
+fleetSizes.bike{5} = 10;              %count of bikes (10 autonomous bikes)
 
 
 %% -- Execute Model -- %%
