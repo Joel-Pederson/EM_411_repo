@@ -256,7 +256,7 @@ varNames = strrep(varNames, '_', ' ');
 T.Properties.VariableNames = varNames;
 
 targetDir = fullfile('..', '..', 'OS 4'); % Goes up two levels, looks for "OS 4"
-outputFileName = 'Task_3_Analysis.xlsx';
+outputFileName = 'Task_3_Specified_Arch_Analysis.xlsx';
 fullOutputPath = fullfile(targetDir, outputFileName);
 if ~isfolder(targetDir)
     fprintf('Directory "%s" not found. Creating it...\n', targetDir);
