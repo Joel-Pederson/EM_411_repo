@@ -18,82 +18,82 @@ ref_designs = {};     % Stores the component indices for each architecture
 ref_archTypes = {};   % Stores the type: 'road' or 'bike'
 ref_fleetSizes = struct();  % Stores the fleet size assumption for each architecture
 
-%Arch 1: Ultra Minimal Road Vehicle 
-ref_designs{1}.chassis = 1;         % C1 (2 pax)
-ref_designs{1}.battery_pack = 1;    % P1 (50 kWh)
-ref_designs{1}.battery_charger = 1; % G1 (10 kW)
-ref_designs{1}.motor = 1;           % M1 (50 kW)
-ref_designs{1}.autonomy = 1;        % A3 (Level 3)
-ref_archTypes{1} = 'road';
-ref_fleetSizes.road{1} = 19;        %count of vehicles
-ref_fleetSizes.bike{1} = 0;         %count of bikes
+% %Arch 1: Ultra Minimal Road Vehicle 
+% ref_designs{1}.chassis = 1;         % C1 (2 pax)
+% ref_designs{1}.battery_pack = 1;    % P1 (50 kWh)
+% ref_designs{1}.battery_charger = 1; % G1 (10 kW)
+% ref_designs{1}.motor = 1;           % M1 (50 kW)
+% ref_designs{1}.autonomy = 1;        % A3 (Level 3)
+% ref_archTypes{1} = 'road';
+% ref_fleetSizes.road{1} = 19;        %count of vehicles
+% ref_fleetSizes.bike{1} = 0;         %count of bikes
 
 %Arch 2: Autonomous Shuttle Fleet 
-ref_designs{2}.chassis = 4;         %C4 (8 pax shuttle) 
-ref_designs{2}.battery_pack = 3;    %P3 (150kWh)
-ref_designs{2}.battery_charger = 3; %G3 (60 kW)
-ref_designs{2}.motor = 3;           %M3 (210 kW)
-ref_designs{2}.autonomy = 2;        %A4 (Level 4)
-ref_archTypes{2} = 'road';
-ref_fleetSizes.road{2} = 4;        %count of vehicles
-ref_fleetSizes.bike{2} = 0;         %count of bikes
+ref_designs{1}.chassis = 4;         %C4 (8 pax shuttle) 
+ref_designs{1}.battery_pack = 3;    %P3 (150kWh)
+ref_designs{1}.battery_charger = 3; %G3 (60 kW)
+ref_designs{1}.motor = 3;           %M3 (210 kW)
+ref_designs{1}.autonomy = 2;        %A4 (Level 4)
+ref_archTypes{1} = 'road';
+ref_fleetSizes.road{1} = 4;        %count of vehicles
+ref_fleetSizes.bike{1} = 0;         %count of bikes
 
-%Arch 3: Electric Bike Fleet
-ref_designs{3}.frame = 3;            % B3 (2 pax, 35 kg) 
-ref_designs{3}.battery_pack = 2;     % E2 (1.5 kWh) 
-ref_designs{3}.battery_charger = 2;  % G2 (0.6 kW)
-ref_designs{3}.motor = 2;            % K2 (0.5 kW)
-ref_archTypes{3} = 'bike';
-ref_fleetSizes.road{3} = 0;          %count of vehicles
-ref_fleetSizes.bike{3} = 26;        %count of bikes
+% %Arch 3: Electric Bike Fleet
+% ref_designs{3}.frame = 3;            % B3 (2 pax, 35 kg) 
+% ref_designs{3}.battery_pack = 2;     % E2 (1.5 kWh) 
+% ref_designs{3}.battery_charger = 2;  % G2 (0.6 kW)
+% ref_designs{3}.motor = 2;            % K2 (0.5 kW)
+% ref_archTypes{3} = 'bike';
+% ref_fleetSizes.road{3} = 0;          %count of vehicles
+% ref_fleetSizes.bike{3} = 26;        %count of bikes
 
-%Arch 4: Mixed Fleet (Autonomous Road + Electric Bike) 
-ref_designs{4}.road = ref_designs{1};        % Use Arch 1
-ref_designs{4}.bike = ref_designs{3};        % Use Arch 3 bike 
-ref_archTypes{4} = 'mixed';
-ref_fleetSizes.road{4} = 15;              %count of vehicles
-ref_fleetSizes.bike{4} = 5;              %count of bikes
+% %Arch 4: Mixed Fleet (Autonomous Road + Electric Bike) 
+% ref_designs{4}.road = ref_designs{1};        % Use Arch 1
+% ref_designs{4}.bike = ref_designs{3};        % Use Arch 3 bike 
+% ref_archTypes{4} = 'mixed';
+% ref_fleetSizes.road{4} = 15;              %count of vehicles
+% ref_fleetSizes.bike{4} = 5;              %count of bikes
 
-%Arch 5: Mixed Fleet More Autonomy (Road + Bike)
-ref_designs{5}.road = ref_designs{2};         % Use Arch 2 shuttle
-ref_designs{5}.road.autonomy = 3;         % ...but with A5 (Level 5)
-ref_designs{5}.bike = ref_designs{3};         % Use Arch 3 bike 
-ref_designs{5}.bike.battery_pack = 2;     % E2 (1.5 kWh)
-ref_designs{5}.bike.battery_charger = 1;  % G1 (0.2 kW)
-ref_designs{5}.bike.motor = 1;            % K1 (0.35 kW)
-ref_archTypes{5} = 'mixed';
-ref_fleetSizes.road{5} = 3;              %count of vehicles
-ref_fleetSizes.bike{5} = 10;              %count of bikes
+% %Arch 5: Mixed Fleet More Autonomy (Road + Bike)
+% ref_designs{5}.road = ref_designs{2};         % Use Arch 2 shuttle
+% ref_designs{5}.road.autonomy = 3;         % ...but with A5 (Level 5)
+% ref_designs{5}.bike = ref_designs{3};         % Use Arch 3 bike 
+% ref_designs{5}.bike.battery_pack = 2;     % E2 (1.5 kWh)
+% ref_designs{5}.bike.battery_charger = 1;  % G1 (0.2 kW)
+% ref_designs{5}.bike.motor = 1;            % K1 (0.35 kW)
+% ref_archTypes{5} = 'mixed';
+% ref_fleetSizes.road{5} = 3;              %count of vehicles
+% ref_fleetSizes.bike{5} = 10;              %count of bikes
 
 %Arch 6: Task 3 Pareto Point 1 
-ref_designs{6}.chassis = 8;         %C8 (30 pax shuttle) 
-ref_designs{6}.battery_pack = 1;    %P1 (50 kWh)
-ref_designs{6}.battery_charger = 3; %G3 (60 kW)
-ref_designs{6}.motor = 1;           %M1 (50 kW)
-ref_designs{6}.autonomy = 1;        %A3 (Level 3)
-ref_archTypes{6} = 'road';
-ref_fleetSizes.road{6} = 1;         %count of vehicles (1 shuttle)
-ref_fleetSizes.bike{6} = 0;         %count of bikes
+ref_designs{2}.chassis = 8;         %C8 (30 pax shuttle) 
+ref_designs{2}.battery_pack = 1;    %P1 (50 kWh)
+ref_designs{2}.battery_charger = 3; %G3 (60 kW)
+ref_designs{2}.motor = 1;           %M1 (50 kW)
+ref_designs{2}.autonomy = 1;        %A3 (Level 3)
+ref_archTypes{2} = 'road';
+ref_fleetSizes.road{2} = 1;         %count of vehicles (1 shuttle)
+ref_fleetSizes.bike{2} = 0;         %count of bikes
 
 %Arch 7: Task 3 Pareto Point 2 
-ref_designs{7}.chassis = 6;         %C6 (16 pax shuttle) 
-ref_designs{7}.battery_pack = 1;    %P1 (50 kWh)
-ref_designs{7}.battery_charger = 3; %G3 (60 kW)
-ref_designs{7}.motor = 1;           %M1 (50 kW)
-ref_designs{7}.autonomy = 1;        %A3 (Level 3)
-ref_archTypes{7} = 'road';
-ref_fleetSizes.road{7} = 2;         %count of vehicles (2 shuttles)
-ref_fleetSizes.bike{7} = 0;         %count of bikes
+ref_designs{3}.chassis = 6;         %C6 (16 pax shuttle) 
+ref_designs{3}.battery_pack = 1;    %P1 (50 kWh)
+ref_designs{3}.battery_charger = 3; %G3 (60 kW)
+ref_designs{3}.motor = 1;           %M1 (50 kW)
+ref_designs{3}.autonomy = 1;        %A3 (Level 3)
+ref_archTypes{3} = 'road';
+ref_fleetSizes.road{3} = 2;         %count of vehicles (2 shuttles)
+ref_fleetSizes.bike{3} = 0;         %count of bikes
 
 %Arch 8: Task 3 Pareto Point 3
-ref_designs{8}.chassis = 7;         %C7 (20 pax shuttle) 
-ref_designs{8}.battery_pack = 6;    %P6 (310 kWh)
-ref_designs{8}.battery_charger = 3; %G3 (60 kW)
-ref_designs{8}.motor = 1;           %M1 (50 kW)
-ref_designs{8}.autonomy = 1;        %A3 (Level 3)
-ref_archTypes{8} = 'road';
-ref_fleetSizes.road{8} = 2;         %count of vehicles (2 shuttles)
-ref_fleetSizes.bike{8} = 0;         %count of bikes
+ref_designs{4}.chassis = 7;         %C7 (20 pax shuttle) 
+ref_designs{4}.battery_pack = 6;    %P6 (310 kWh)
+ref_designs{4}.battery_charger = 3; %G3 (60 kW)
+ref_designs{4}.motor = 1;           %M1 (50 kW)
+ref_designs{4}.autonomy = 1;        %A3 (Level 3)
+ref_archTypes{4} = 'road';
+ref_fleetSizes.road{4} = 2;         %count of vehicles (2 shuttles)
+ref_fleetSizes.bike{4} = 0;         %count of bikes
 
 %% -- Define Fleet-Level Model Assumptions -- %%
 %Values from Table 1 unless otherwise noted
@@ -587,18 +587,25 @@ figure;
 hold on; 
 
 %Plot scatterers 
-idx_bike = strcmp(Type, 'Bike');
-idx_road = strcmp(Type, 'Road');
+h = gobjects(6, 1); % Graphics handles for legend
 idx_mixed = strcmp(Type, 'Mixed');
-scatter(Cost(idx_mixed) / 1e6, MAU(idx_mixed), 16, color_mixed, '.'); 
-scatter(Cost(idx_road) / 1e6, MAU(idx_road), 16, color_road, '.');    
-scatter(Cost(idx_bike) / 1e6, MAU(idx_bike), 16, color_bike, '.'); 
+h(1) = scatter(Cost(idx_mixed) / 1e6, MAU(idx_mixed), 15, color_mixed, '.'); 
+set(h(1), 'DisplayName', 'Mixed Fleets');
+
+idx_road = strcmp(Type, 'Road');
+h(2) = scatter(Cost(idx_road) / 1e6, MAU(idx_road), 12, color_road, '.');    
+set(h(2), 'DisplayName', 'Road Vehicles');
+
+idx_bike = strcmp(Type, 'Bike');
+h(3) = scatter(Cost(idx_bike) / 1e6, MAU(idx_bike), 25, color_bike, '.'); 
+set(h(3), 'DisplayName', 'Bike Vehicles');
 
 xlabel('Total Fleet Cost ($ Millions)');
 ylabel('Multi-Attribute Utility (MAU)');
 title(sprintf('Task 4: Off-Peak Scenario Tradespace (Cost vs. Utility)\n%d Valid Architectures Found', final_idx));
 grid on; box on;
-plot(0, 1, 'ksq', 'MarkerSize', 10, 'MarkerFaceColor', 'g');
+%Plot Utopia Point
+h(4) = plot(0, 1, 'ksq', 'MarkerSize', 10, 'MarkerFaceColor', 'g', 'DisplayName', 'Utopia Point');
 
 %Identify and Plot Pareto Frontier (for the new off-peak tradespace)
 isPareto = true(length(Cost), 1); 
@@ -614,43 +621,39 @@ end
 paretoIndices = find(isPareto);
 [paretoCostSorted, sortOrder] = sort(Cost(paretoIndices));
 paretoMAUSorted = MAU(paretoIndices(sortOrder));
-plot(paretoCostSorted / 1e6, paretoMAUSorted, 'k-', 'LineWidth', 1.5, 'DisplayName', 'Pareto Frontier');
+h(5) = plot(paretoCostSorted / 1e6, paretoMAUSorted, 'k-', 'LineWidth', 1.5, 'DisplayName', 'Off-Peak Pareto Frontier');
 
 %Plot Task 3 Reference Points
-num_baseline = 5; %hand-picked ones
+num_baseline = length(ref_designs) - 3; %hand-picked designs - the 3 Pareto ones
 num_pareto = length(ref_designs) - num_baseline; %Task 3 Pareto
 
-% %Plot the 5 Baseline Architectures 
-% plot(ref_T.Cost(1:num_baseline) / 1e6, ref_T.MAU(1:num_baseline), ...
-%      'k*', ... 
-%      'MarkerSize', 12, ...
-%      'LineWidth', 1.5, ...
-%      'DisplayName', 'Task 3 Baseline Archs');
-     
-%Plot the 3 Pareto Architectures
-% if num_pareto > 0
-%     plot(ref_T.Cost(num_baseline+1:end) / 1e6, ref_T.MAU(num_baseline+1:end), ...
-%          'rd', ...
-%          'MarkerSize', 10, ...
-%          'MarkerFaceColor', 'r', ...
-%          'LineWidth', 1.5, ...
-%          'DisplayName', 'Task 3 Pareto Archs');
-% end
+%Plot the Baseline Architecture(s)
+for i = 1:num_baseline
+    h_baseline(i) = plot(ref_T.Cost(i) / 1e6, ref_T.MAU(i), ...
+         'pentagram', 'MarkerEdgeColor','k', 'MarkerSize', 12, ...
+         'LineWidth', 1.5, 'DisplayName', sprintf('Baseline Arch %d', i));
+end
 
-legend('Mixed Fleets', 'Road Vehicles', 'Bike Vehicles', 'Utopia Point', ...
-       'Off-Peak Pareto Frontier', ...
-       'Location', 'southeast');
-%ylim([min(MAU) - 0.05, 1.05]); % Pad the y-axis
+% Plot the 3 Pareto Architectures
+if num_pareto > 0
+    for i = 1:num_pareto
+        plot_idx = num_baseline + i;
+        h_pareto(i) = plot(ref_T.Cost(plot_idx) / 1e6, ref_T.MAU(plot_idx), ...
+             'rd', ...
+             'MarkerSize', 10, ...
+             'MarkerFaceColor', 'r', ...
+             'LineWidth', 1.5, ...
+             'DisplayName', sprintf('Pareto Design %d', i));
+    end
+end
 
-%Add Task 2 Reference Architecture
-plot(398600/1e6, 0.917801539,"pentagram",'MarkerSize',14,'MarkerEdgeColor','k','MarkerFaceColor','m','DisplayName','Reference Architecture')
-
-%Add Interesting Task 3 Pareto Frontier Designs
-plot(188400/1e6, 0.970558015797232,"diamond",'MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','b','DisplayName','Pareto Design 1')
-plot(130400/1e6, 0.950885394805296,"diamond",'MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','m','DisplayName','Pareto Design 2')
-plot(79200/1e6, 0.945472973184039,"diamond",'MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','k','DisplayName','Pareto Design 3')
+% Combine all handles that have a DisplayName
+%all_handles = [h(:); h_baseline(:); h_pareto(:)];
+legend 
+%legend(all_handles, 'Location', 'southeast');
 
 hold off;
+%ylim([min(MAU) - 0.05, 1.05]); % Pad the y-axis
 
 %% -- Output Table to an Excel file and Save Plot -- %%
 T_results = table(Cost, MAU, isPareto, Type, Specs, FleetSizeRoad, FleetSizeBike, ...
