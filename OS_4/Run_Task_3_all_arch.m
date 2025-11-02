@@ -423,11 +423,11 @@ idx_road = strcmp(Type, 'Road');
 idx_mixed = strcmp(Type, 'Mixed');
 
 % Plot Mixed Fleet 
-scatter(Cost(idx_mixed) / 1e6, MAU(idx_mixed), 16, color_mixed, '.'); % Slightly larger size 15 dot
+scatter(Cost(idx_mixed) / 1e6, MAU(idx_mixed), 16, color_mixed, '.'); %Size 16 dot
 
 % Plot Bikes and Roads 
-scatter(Cost(idx_bike) / 1e6, MAU(idx_bike), 16, color_bike, '.'); % Size 12 dot
-scatter(Cost(idx_road) / 1e6, MAU(idx_road), 16, color_road, '.'); % Size 12 dot
+scatter(Cost(idx_bike) / 1e6, MAU(idx_bike), 16, color_bike, '.'); 
+scatter(Cost(idx_road) / 1e6, MAU(idx_road), 16, color_road, '.'); 
 
 % Add Labels and Utopia Point
 xlabel('Total Fleet Cost ($ Millions)');
@@ -465,7 +465,17 @@ paretoMAUSorted = MAU(paretoIndices(sortOrder));
 
 plot(paretoCostSorted / 1e6, paretoMAUSorted, 'k-', 'LineWidth', 1.5, 'DisplayName', 'Pareto Frontier');
 legend('Road Vehicles', 'Bike Vehicles', 'Mixed Fleets', 'Utopia Point','Pareto Frontier', 'Location', 'southeast');
-hold off;
+
+%Add Task 2 Reference Architecture
+plot(398600/1e6, 0.917801539,"pentagram",'MarkerSize',14,'MarkerEdgeColor','k','MarkerFaceColor','m','DisplayName','Reference Architecture')
+
+%Add Interesting Pareto Frontier Designs
+plot(188400/1e6, 0.970558015797232,"diamond",'MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','b','DisplayName','Pareto Design 1')
+plot(130400/1e6, 0.950885394805296,"diamond",'MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','b','DisplayName','Pareto Design 2')
+plot(79200/1e6, 0.945472973184039,"diamond",'MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','b','DisplayName','Pareto Design 3')
+
+hold off
+
 % Set the y-axis limits to have a buffer below the min MAU value
 %ylim([min(MAU) - 0.02, 1.01]);
 

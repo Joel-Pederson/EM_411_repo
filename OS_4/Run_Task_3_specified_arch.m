@@ -42,7 +42,6 @@ archTypes{1} = 'road';
 fleetSizes.road{1} = 19;        %count of vehicles (19 cars)
 fleetSizes.bike{1} = 0;         %count of bikes
 
-
 % Option 2 - Autonomous Shuttle Fleet (8-pax road vehicles)
 designs{2}.chassis = 4;         %C4 (8 pax shuttle) 
 designs{2}.battery_pack = 3;    %P3 (150kWh)
