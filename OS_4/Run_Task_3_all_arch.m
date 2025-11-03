@@ -474,9 +474,6 @@ plot(79200/1e6, 0.945472973184039,"diamond",'MarkerSize',10,'MarkerEdgeColor','k
 
 hold off
 
-% Set the y-axis limits to have a buffer below the min MAU value
-%ylim([min(MAU) - 0.02, 1.01]);
-
 %% -- Output Table to an Excel file and Save Plot -- %%
 T_results = table(Cost, MAU, isPareto, Type, Specs, FleetSizeRoad, FleetSizeBike, ...
                   'VariableNames', {'TotalFleetCost_USD', 'MAU', 'IsOnParetoFrontier', 'ArchType', 'Specifications', 'FleetSize_Road', 'FleetSize_Bike'});

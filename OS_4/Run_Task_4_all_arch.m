@@ -650,7 +650,8 @@ for ii = 1:length(ref_designs)
         actual_trips_bike = actual_throughput_bike / passengersPerTrip_bike;
         totalFleetTripsPerHr = actual_trips_road + actual_trips_bike;
 
-        actual_wait_time_min = 0.5 * (60 / totalFleetTripsPerHr);
+        actual_wait_time_min = 0.5 * (60 / totalFleetTripsPerHr); %Calculate the actual wait time in minutes based on fleet trips per hour
+
 
         ref_T.Cost(ii) = (roadVehicle_cost.total_vehicle_cost * fleetSize_road) + (bikeVehicle_cost.total_vehicle_cost * fleetSize_bike);
         ref_T.Throughput(ii) = actual_throughput_in_scenario;
@@ -739,7 +740,8 @@ for i = 1:num_ref_points
         Specs_ref{i} = sprintf("%s; %s (Ref)", specStr_road, specStr_bike);
     end
 end
-
+%Combine multiple arrays related to costs, specifications,
+% and performance metrics for new and reference vehicles into larger arrays for further analysis.
 Cost_all = [Cost_new; Cost_ref];
 MAU_all = [MAU_new; MAU_ref];
 Type_all = [Type_new; Type_ref];

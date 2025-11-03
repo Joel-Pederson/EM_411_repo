@@ -244,7 +244,7 @@ for ii = 1:length(designs)
     end
     [T.MAU(ii)] = computeMAU(T(ii,:));
 end %end model execution
-warning('on', 'MATLAB:table:RowsAddedExistingVars'); % Turn the warning back on (good practice)
+warning('on', 'MATLAB:table:RowsAddedExistingVars'); 
 
 %% -- Output Table to an Excel file -- %%
 % Prepare variable names for Excel 
