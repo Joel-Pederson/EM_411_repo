@@ -362,9 +362,8 @@ parfor c_idx = 1:num_c % PARFOR loop for road chassis
     for b_r = 1:num_b_r
       for g_r = 1:num_g_r
         for m_r = 1:num_m_r
-          for a = 1:num_a % <-- FIXED (was 'aa')
+          for a = 1:num_a 
             
-            % --- FIXED: Use 'design_road' as input ---
             design_road = struct('chassis', c_idx, 'battery_pack', b_r, 'battery_charger', g_r, 'motor', m_r, 'autonomy', a);
             [Road_EV_Design, cost_road, isValid_road] = calculateRoadVehicle(design_road, roadDB);
             
@@ -424,7 +423,6 @@ parfor c_idx = 1:num_c % PARFOR loop for road chassis
                         temp_mau(valid_count_slice) = computeMAU(design_metrics);
                         temp_type{valid_count_slice} = 'Mixed';
                         
-                        % --- FIXED: Use 'a' not 'aa' ---
                         temp_specs{valid_count_slice} = sprintf("R(C%d..A%d)+B(F%d..M%d)", c_idx, a, f, m_b); % Abbreviated
                         
                         temp_fleet_r(valid_count_slice) = req_fs_r;
