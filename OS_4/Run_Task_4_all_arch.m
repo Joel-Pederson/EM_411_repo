@@ -132,7 +132,7 @@ update_frequency = 500; % Update UI less often with DataQueue
 %significant help of MATLAB Copilot and Google Gemini because I always mess
 %this up in MATLAB. It's very convoluted to do right in a prallel
 %configuration. It took both tools to get right because Gemini was
-%confidently lying about figure windows and MATLAB co-pilot new the syntax
+%confidently lying about figure windows and MATLAB co-pilot knew the syntax
 %but didn't know how to configure correctly in the context of my nested
 %loops. 
 
@@ -490,7 +490,7 @@ varTypes_ref = [
 ref_T = table('Size', [num_ref_designs, length(varNames_ref)], ...
               'VariableTypes', varTypes_ref, 'VariableNames', varNames_ref);
 
-%Loop through these 8 architectures 
+%Loop through these architectures 
 for ii = 1:length(ref_designs)
     design = ref_designs{ii};
     archType = ref_archTypes{ii};
