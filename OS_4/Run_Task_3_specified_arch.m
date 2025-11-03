@@ -162,7 +162,7 @@ for ii = 1:length(designs)
         availableVehicles = fleetSize_bike * Bike_EV_Design.availability;
         fleetThroughput_passengers_hr = availableVehicles * singleVehicleThroughput; %persons per hour for the fleet
         fleetTripsPerHr = fleetThroughput_passengers_hr / passengersPerTrip; %compute trips based on persons per hour throughput
-        headway_min = 60 / fleetTripsPerHr; %inverse of frequency - number of vehicles per hour [cite: 209]
+        headway_min = 60 / fleetTripsPerHr; %inverse of frequency - number of vehicles per hour 
         
         T.FleetThroughput_pass_hr(ii) = fleetThroughput_passengers_hr;
         T.AvgWaitTime_min(ii) = 0.5 * headway_min;
