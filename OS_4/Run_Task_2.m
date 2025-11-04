@@ -12,15 +12,15 @@ clear all; close all;
 
 %% -- Define Fleet-Level Model Assumptions -- %%
 %Values from Table 1 unless otherwise noted
-max_travel_time_min = 7; %max transportation time between any 2 locations within system boundary
-dwell_time_s = 60; %time for passengers get in and out
-average_trip_time_min = (max_travel_time_min + (dwell_time_s / 60));
+max_travel_time_min = 7; %max transportation time (in minutes) between any 2 locations within system boundary
+dwell_time_s = 60; %time for passengers get in and out (in seconds)
+average_trip_time_min = (max_travel_time_min + (dwell_time_s / 60)); %max travel time (in minutes) + dwell time (in minutes)
 peak_passenger_throughput_per_hour = 150; %passengers per hour at peak
 off_peak_passenger_throughput_per_hour = 50; %passengers per hour during off-peak
 daily_passenger_volume = 1500; %passengers per day
-load_factor_per_trip = 0.75; %from appendix B
-max_wait_time_within_boundary_min = 5; %maximum waiting time for transportation within system boundary
-max_wait_time_outside_of_boundary_min = 20; %maximum waiting time for transportation outside of system boundary
+load_factor_per_trip = 0.75; %from appendix B (unitless)
+max_wait_time_within_boundary_min = 5; %maximum waiting time (in minutes) for transportation within system boundary
+max_wait_time_outside_of_boundary_min = 20; %maximum waiting time (in minutes) for transportation outside of system boundary
 
 %% -- Define Unique Architectures -- %%
 
@@ -28,7 +28,7 @@ designs = {};     % Stores the component indices for each architecture
 archTypes = {};   % Stores the type: 'road' or 'bike'
 fleetSizes = [];  % Stores the fleet size assumption for each architecture
 
-% Option 1 - Ultra Minimal Road Vehicle
+% Option 1 - Ultra Minimal Road Vehicle (Lowest value for each component. 2-pax road vehicles only)
 % 'design' must be a struct containing the index for EACH component.
 designs{1}.chassis = 1;         % C1 (2 pax)
 designs{1}.battery_pack = 1;    % P1 (50 kWh)
@@ -39,7 +39,7 @@ archTypes{1} = 'road';
 fleetSizes.road{1} = 19;        %count of vehicles (19 cars)
 fleetSizes.bike{1} = 0;         %count of bikes
 
-% Option 2 - Autonomous Shuttle Fleet (8-pax road vehicles)
+% Option 2 - Autonomous Shuttle Fleet (8-pax road vehicles only)
 designs{2}.chassis = 4;         %C4 (8 pax shuttle) 
 designs{2}.battery_pack = 3;    %P3 (150kWh)
 designs{2}.battery_charger = 3; %G3 (60 kW)
@@ -50,7 +50,7 @@ fleetSizes.road{2} = 4;         %count of vehicles (4 shuttles)
 fleetSizes.bike{2} = 0;         %count of bikes
 
 
-% Option 3 - Electric Bike Fleet
+% Option 3 - Electric Bike Fleet (2-pax bikes only)
 designs{3}.frame = 3;            % B3 (2 pax, 35 kg)
 designs{3}.battery_pack = 2;     % E2 (1.5 kWh) 
 designs{3}.battery_charger = 2;  % G2 (0.6 kW)
@@ -65,24 +65,24 @@ designs{4}.road = designs{1};         % Use Arch 1 shuttle
 designs{4}.bike = designs{3};         % Use Arch 3 bike 
 archTypes{4} = 'mixed';
 fleetSizes.road{4} = 15;              %count of vehicles (15 cars)
-fleetSizes.bike{4} = 5;              %count of bikes (5 autonomous bikes)
+fleetSizes.bike{4} = 5;              %count of bikes (5 electric bikes)
 
-% Option 5 - Mixed Fleet More Autonomy (Road + Bike)
+% Option 5 - Mixed Fleet More Autonomy (Autonomous Road + Electric Bike)
 designs{5}.road = designs{2};         % Use Arch 2 shuttle
-designs{5}.road.autonomy = 3;         % ...but with A5 (Level 5)
+designs{5}.road.autonomy = 3;         % ...but with A5 (Level 5) %using max autonomy (from the appendix values provided in appendix C)
 designs{5}.bike = designs{3};         % Use Arch 3 bike 
 designs{5}.bike.battery_pack = 2;     % E2 (1.5 kWh) <-- NOTE: This bike is now B3+E2
 designs{5}.bike.battery_charger = 1;  % G1 (0.2 kW)
 designs{5}.bike.motor = 1;            % K1 (0.35 kW)
 archTypes{5} = 'mixed';
 fleetSizes.road{5} = 3;               %count of vehicles (3 shuttle)
-fleetSizes.bike{5} = 10;              %count of bikes (10 autonomous bikes)
+fleetSizes.bike{5} = 10;              %count of bikes (10 electric bikes)
 
 
 %% -- Execute Model -- %%
 T = table;
 avgTripTime_h = average_trip_time_min / 60; % Convert to hours for simplicity
-warning('off', 'MATLAB:table:RowsAddedExistingVars');% Suppress the specific harmless warning 
+warning('off', 'MATLAB:table:RowsAddedExistingVars'); %Suppress the specific harmless warning 
 
 for ii = 1:length(designs)
     design = designs{ii};
@@ -102,7 +102,7 @@ for ii = 1:length(designs)
             continue
         end
         
-        % Fleet Calculations for Road 
+        % Fleet Calculations for road
         T.Fleet_Size(ii,1) = fleetSize_road + fleetSize_bike;
         T.Fleet_Composition_Road_Vehicles(ii,1) = fleetSize_road;
         T.Fleet_Composition_Bike_Vehicles(ii,1) = fleetSize_bike;
